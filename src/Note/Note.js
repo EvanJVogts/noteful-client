@@ -18,11 +18,18 @@ export default class Note extends React.Component {
             {name}
           </Link>
         </h2>
-        <button className='Note__delete' type='button' onClick={()=>this.context.deletedId(id)}>
-          <FontAwesomeIcon icon='trash-alt' />
-          {' '}
-          remove
-        </button>
+        
+        {(this.props.reset) && <Link to='/' ><button className='Note__delete' type='button' onClick={()=>this.context.deletedId(id)}>
+              <FontAwesomeIcon icon='trash-alt' />
+              {' '}
+              remove
+            </button></Link>}
+        {(!this.props.reset) && <button className='Note__delete' type='button' onClick={()=>this.context.deletedId(id)}>
+              <FontAwesomeIcon icon='trash-alt' />
+              {' '}
+              remove
+            </button>}
+
         <div className='Note__dates'>
           <div className='Note__dates-modified'>
             Modified

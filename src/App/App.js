@@ -45,7 +45,7 @@ class App extends Component {
                 return response.json()
             })
             .then(() => {
-                this.handleDeletedNote(noteId)
+                this.handleDeletedNote(noteId);
             });
     }
 

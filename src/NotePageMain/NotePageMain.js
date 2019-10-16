@@ -13,6 +13,7 @@ export default class NotePageMain extends React.Component {
       <section className='NotePageMain'>
         <Note
           id={this.props.note.id}
+          reset={true}
         />
         <div className='NotePageMain__content'>
           {note.content.split(/\n \r|\n/).map((para, i) =>
