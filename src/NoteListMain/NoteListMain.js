@@ -13,8 +13,6 @@ export default function NoteListMain(props) {
           <li key={note.id}>
             <Note
               id={note.id}
-              name={note.name}
-              modified={note.modified}
             />
           </li>
         )}

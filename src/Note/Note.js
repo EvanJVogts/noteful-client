@@ -18,7 +18,7 @@ export default class Note extends React.Component {
             {name}
           </Link>
         </h2>
-        <button className='Note__delete' type='button'>
+        <button className='Note__delete' type='button' onClick={()=>this.context.deletedId(id)}>
           <FontAwesomeIcon icon='trash-alt' />
           {' '}
           remove

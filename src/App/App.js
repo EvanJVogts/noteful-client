@@ -5,7 +5,7 @@ import NoteListNav from '../NoteListNav/NoteListNav';
 import NotePageNav from '../NotePageNav/NotePageNav';
 import NoteListMain from '../NoteListMain/NoteListMain';
 import NotePageMain from '../NotePageMain/NotePageMain';
-import dummyStore from '../dummy-store';
+// import dummyStore from '../dummy-store';
 import {getNotesForFolder, findNote, findFolder} from '../notes-helpers';
 import './App.css';
 import Context from '../Context';
@@ -17,9 +17,43 @@ class App extends Component {
     };
 
     componentDidMount() {
-        // fake date loading from API call
-        setTimeout(() => this.setState(dummyStore), 600);
+        fetch(`http://localhost:9090/notes`)
+            .then(response => {
+                return response.json()
+            })
+            .then ((notes) => {
+            this.setState({notes})})
+        fetch(`http://localhost:9090/folders`)
+            .then(response => {
+                return response.json()
+            })
+            .then ((folders) => {
+            this.setState({folders})})
+        this.handleDeletedNote = this.handleDeletedNote.bind(this)
+        this.handleClickDelete = this.handleClickDelete.bind(this)
     }
+
+    handleClickDelete(noteId) {
+        console.log(noteId)
+        fetch(`http://localhost:9090/notes/${noteId}`, {
+            method: 'DELETE',
+            headers: {
+              'content-type': 'application/json'
+            },
+          })
+            .then(response => {
+                return response.json()
+            })
+            .then(() => {
+                this.handleDeletedNote(noteId)
+            });
+    }
+
+    handleDeletedNote(noteId) {
+        this.setState ({
+           notes: this.state.notes.filter(note => note.id !== noteId)
+        });
+    };
 
     renderNavRoutes() {
         const {notes, folders} = this.state;
@@ -94,7 +128,8 @@ class App extends Component {
         return (
             <Context.Provider value={{
                 notes: this.state.notes,
-                folders: this.state.folders
+                folders: this.state.folders,
+                deletedId: this.handleClickDelete
             }}>
             <div className="App">
                 <nav className="App__nav">{this.renderNavRoutes()}</nav>
