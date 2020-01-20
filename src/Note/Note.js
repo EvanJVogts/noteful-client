@@ -2,15 +2,41 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ApiContext from '../ApiContext'
+import config from '../config'
 import './Note.css'
-import Context from '../Context'
-import {findNote} from '../notes-helpers.js'
 
 export default class Note extends React.Component {
-  static contextType = Context;
-  render () {
-    const specificNote = findNote(this.context.notes, this.props.id);
-    const {id, name, modified} = specificNote;
+  static defaultProps ={
+    onDeleteNote: () => {},
+  }
+  static contextType = ApiContext;
+
+  handleClickDelete = e => {
+    e.preventDefault()
+    const noteId = this.props.id;
+
+    fetch(`${config.API_ENDPOINT}/notes/${noteId}`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json'
+      },
+    })
+      .then(res => {
+        if (!res.ok)
+          return res.json().then(e => Promise.reject(e));
+          
+        this.context.deleteNote(noteId)
+        // allow parent to perform extra behaviour
+        this.props.onDeleteNote(noteId)
+      })
+      .catch(error => {
+        console.error({ error })
+      })
+  }
+
+  render() {
+    const { name, id, modified } = this.props
     return (
       <div className='Note'>
         <h2 className='Note__title'>
@@ -18,18 +44,15 @@ export default class Note extends React.Component {
             {name}
           </Link>
         </h2>
-        
-        {(this.props.reset) && <Link to='/' ><button className='Note__delete' type='button' onClick={()=>this.context.deletedId(id)}>
-              <FontAwesomeIcon icon='trash-alt' />
-              {' '}
-              remove
-            </button></Link>}
-        {(!this.props.reset) && <button className='Note__delete' type='button' onClick={()=>this.context.deletedId(id)}>
-              <FontAwesomeIcon icon='trash-alt' />
-              {' '}
-              remove
-            </button>}
-
+        <button
+          className='Note__delete'
+          type='button'
+          onClick={this.handleClickDelete}
+        >
+          <FontAwesomeIcon icon='trash-alt' />
+          {' '}
+          remove
+        </button>
         <div className='Note__dates'>
           <div className='Note__dates-modified'>
             Modified
