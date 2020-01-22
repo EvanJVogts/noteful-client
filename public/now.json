@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "alias": "my-bookmarks-app",
+  "alias": "noteful-bookmarks",
   "name": "bookmarks-app",
   "routes": [
     {
