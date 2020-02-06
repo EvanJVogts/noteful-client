@@ -13,14 +13,13 @@ export default class AddNote extends Component {
   static contextType = ApiContext;
 
   handleSubmit = e => {
-    e.preventDefault();
+    e.preventDefault()
     const newNote = {
-      title: e.target['note-name'].value,
+      note_name: e.target['note-name'].value,
+      modified: new Date(),
+      folderid: e.target['note-folder-id'].value,
       content: e.target['note-content'].value,
-      folder_id: e.target['note-folder-id'].value,
-      date_added: new Date(),
     }
-    //console.log(newNote);
     fetch(`${config.API_ENDPOINT}/notes`, {
       method: 'POST',
       headers: {
@@ -35,7 +34,7 @@ export default class AddNote extends Component {
       })
       .then(note => {
         this.context.addNote(note)
-        this.props.history.push(`/`)
+        this.props.history.push(`/notes/${note.noteid}`)
       })
       .catch(error => {
         console.error({ error })
@@ -43,8 +42,7 @@ export default class AddNote extends Component {
   }
 
   render() {
-    const { folders=[] } = this.context;
-    //console.log(folders)
+    const { folders=[] } = this.context
     return (
       <section className='AddNote'>
         <h2>Create a note</h2>
@@ -68,8 +66,8 @@ export default class AddNote extends Component {
             <select id='note-folder-select' name='note-folder-id'>
               <option value={null}>...</option>
               {folders.map(folder =>
-                <option key={folder.id} value={folder.id}>
-                  {folder.folder_name}
+                <option key={folder.folderid} value={folder.folderid}>
+                  {folder.folder_title}
                 </option>
               )}
             </select>

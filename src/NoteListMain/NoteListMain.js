@@ -8,6 +8,7 @@ import { getNotesForFolder } from '../notes-helpers'
 import './NoteListMain.css'
 
 export default class NoteListMain extends React.Component {
+
   static defaultProps = {
     match: {
       params: {}
@@ -16,20 +17,19 @@ export default class NoteListMain extends React.Component {
   static contextType = ApiContext
 
   render() {
-    const { folder_id } = this.props.match.params;
-    const { notes=[] } = this.context;
-    const notesForFolder = getNotesForFolder(notes, folder_id)
-    //console.log(notesForFolder)
+    const { folderid } = this.props.match.params
+    const { notes=[] } = this.context
+    
+    const notesForFolder = getNotesForFolder(notes, folderid)
     return (
       <section className='NoteListMain'>
-        
         <ul>
           {notesForFolder.map(note =>
-            <li key={Math.random()}>
+            <li key={note.noteid}>
               <Note
-                id={note.id}
-                name={note.title}
-                modified={note.date_added}
+                noteid={note.noteid}
+                note_name={note.note_name}
+                modified={note.modified}
               />
             </li>
           )}
